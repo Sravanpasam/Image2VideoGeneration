@@ -1,0 +1,76 @@
+# Runtime dependencies for the Google Colab GPU environment (Python 3.10).
+#
+# Install order matters and is automated by scripts/setup_colab.sh:
+#   1. torch + torchvision from the CUDA 11.8 wheel index
+#   2. this file (with constraints.txt applied)
+#   3. basicsr / facexlib / gfpgan with --no-deps (their metadata is stale)
+#
+# ---------------------------------------------------------------------------
+# Numerical stack
+# ---------------------------------------------------------------------------
+# numpy MUST stay on the 1.23 line. SadTalker's face3d code uses
+#   * np.VisibleDeprecationWarning   (removed in numpy 2.0)
+#   * np.float                       (removed in numpy 1.24)
+# See s2p/patches.py::required_numpy_spec.  Python 3.10/3.11 is required because
+# numpy 1.23.5 has no wheels for Python 3.12+.
+numpy==1.23.5
+scipy==1.10.1
+numba==0.58.1
+llvmlite==0.41.1
+librosa==0.10.2.post1
+soundfile==0.12.1
+scikit-image==0.19.3
+# imageio 2.19 keeps the classic `imageio.get_writer(..., fps=)` API that
+# SadTalker relies on (deprecated in imageio 2.28+). scikit-image must therefore
+# stay on 0.19.x as well: 0.22+ requires imageio>=2.27.
+imageio==2.19.3
+# 0.4.7 (SadTalker's pin) imports the legacy `pkg_resources`, which no longer
+# exists in setuptools >= 81 -> "No module named 'pkg_resources'" at the very end
+# of the render. 0.5.1 is the first release that uses importlib.resources and is
+# API compatible with the calls imageio 2.19 makes (get_ffmpeg_exe,
+# write_frames, count_frames_and_secs).
+imageio-ffmpeg==0.5.1
+# Legacy helpers in this 2023-era stack (tb-nightly, diffjpeg, ...) still expect
+# pkg_resources at runtime, and `pip --no-build-isolation` uses this setuptools
+# to build basicsr. setuptools 81 removed pkg_resources.
+setuptools<81
+opencv-python-headless==4.9.0.80
+pillow==9.5.0
+PyYAML==6.0.1
+tqdm==4.66.4
+yacs==0.1.8
+# animate.py uses pydub.AudioSegment for the duration of the generated video.
+# pydub needs the stdlib `audioop` module, which was removed in Python 3.13.
+pydub==0.25.1
+safetensors==0.4.3
+# `src/face3d/models/networks.py` imports kornia at inference time too.
+kornia==0.6.12
+
+# ---------------------------------------------------------------------------
+# SadTalker / GFPGAN helper libraries (installed with --no-deps)
+# ---------------------------------------------------------------------------
+# Their setup metadata pins ancient, mutually incompatible versions, so we
+# install them without dependencies and provide the few modules they actually
+# import at runtime:
+addict==2.4.0
+future==1.0.0
+lmdb==1.4.1
+filterpy==1.4.5
+
+# ---------------------------------------------------------------------------
+# Speech synthesis - all free, no API key, no account
+# ---------------------------------------------------------------------------
+edge-tts==7.3.1
+piper-tts==1.8.0
+# onnxruntime is pip-installed by piper-tts; pin a version that still accepts
+# numpy 1.23.
+onnxruntime==1.16.3
+gTTS==2.5.1
+
+# ---------------------------------------------------------------------------
+# Web UI
+# ---------------------------------------------------------------------------
+# Gradio 4.44.1 is the last 4.x release and the newest one whose dependencies
+# accept numpy 1.x.  huggingface-hub is pinned because 0.30+ removed HfFolder.
+gradio==4.44.1
+huggingface-hub==0.25.2

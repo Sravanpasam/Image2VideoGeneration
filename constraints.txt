@@ -1,0 +1,4 @@
+# Hard constraints applied to *every* pip invocation in the Colab environment.
+# If a package cannot be satisfied together with numpy 1.23.5, pip fails loudly
+# instead of silently upgrading numpy and breaking SadTalker at runtime.
+numpy==1.23.5

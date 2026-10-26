@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Test / tooling caches
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Model artefacts and generated media (large, reproducible)
+third_party/
+SadTalker/
+models/
+outputs/
+work/
+*.onnx
+*.onnx.json
+*.safetensors
+*.pth
+*.pth.tar
+*.mp4
+*.wav
+*.mp3
+*.log
+
+# ... but a small demo recording may be committed on purpose
+!docs/demo*.mp4
+!docs/demo*.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
