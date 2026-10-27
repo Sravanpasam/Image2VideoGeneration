@@ -1,4 +1,4 @@
-# Script2Presenter
+# Image2Video
 
 **A portrait photograph + a script → a downloadable talking-head video.**
 
